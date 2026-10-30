@@ -5,6 +5,8 @@ import { SEOHead } from "@/components/SEOHead";
 import { BreadcrumbJsonLd, ServiceJsonLd, FaqJsonLd } from "@/components/JsonLd";
 import { Section } from "@/components/Section";
 import type { PageSEOConfig } from "@/lib/seo";
+import type { SiteContent } from "@/lib/site-content";
+import { usePageSeo, useSiteContent } from "@/hooks/useSiteContent";
 
 interface FaqItem {
   question: string;
@@ -12,6 +14,7 @@ interface FaqItem {
 }
 
 interface ServiceTemplateProps {
+  serviceKey: keyof SiteContent["services"];
   config: PageSEOConfig;
   title: string;
   description: string;
@@ -22,14 +25,26 @@ interface ServiceTemplateProps {
 }
 
 export function ServiceTemplate({
-  config,
-  title,
-  description,
-  features,
-  ctaText = "Start a Project",
-  ctaLink = "/contact",
-  faqs,
+  serviceKey,
+  config: fallbackConfig,
+  title: fallbackTitle,
+  description: fallbackDescription,
+  features: fallbackFeatures,
+  ctaText: fallbackCtaText = "Start a Project",
+  ctaLink: fallbackCtaLink = "/contact",
+  faqs: fallbackFaqs,
 }: ServiceTemplateProps) {
+  const { services } = useSiteContent();
+  const service = services[serviceKey];
+  const cmsConfig = usePageSeo(serviceKey);
+  const config = cmsConfig ?? fallbackConfig;
+  const title = service?.title || fallbackTitle;
+  const description = service?.description || fallbackDescription;
+  const features = service?.features?.length ? service.features : fallbackFeatures;
+  const ctaText = service?.ctaText || fallbackCtaText;
+  const ctaLink = service?.ctaLink || fallbackCtaLink;
+  const faqs = service?.faqs?.length ? service.faqs : fallbackFaqs;
+
   return (
     <>
       <SEOHead {...config} />

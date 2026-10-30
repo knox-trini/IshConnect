@@ -1,38 +1,18 @@
-import {
-  Calendar,
-  Laptop,
-  Wifi,
-  Video,
-  MessageCircle,
-  Instagram,
-  ArrowUpRight,
-  Sparkles,
-} from "lucide-react";
+import { Calendar, Laptop, MessageCircle, Instagram, ArrowUpRight, Sparkles } from "lucide-react";
 import { Section, SectionHeading } from "../Section";
 import { Reveal } from "../Reveal";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
-
-const PREP_CHECKLIST = [
-  {
-    icon: Wifi,
-    text: "Stable internet connection",
-  },
-  {
-    icon: Laptop,
-    text: "Laptop/PC with VS Code, Node.js and Git installed",
-  },
-  {
-    icon: Video,
-    text: "Zoom/Google Meet ready for live sessions",
-  },
-];
+import { useSiteContent } from "@/hooks/useSiteContent";
+import { getContentIcon } from "@/lib/content-icons";
 
 export function BootcampSection() {
   const settings = useSiteSettings();
+  const { home } = useSiteContent();
+  const copy = home.bootcamp;
   return (
     <Section id="bootcamps" className="bg-surface-elevated/40">
       <SectionHeading
-        eyebrow="Bootcamp Update"
+        eyebrow={copy.eyebrow}
         title={
           <>
             {settings.bootcampTitle || "IshConnect Summer"}{" "}
@@ -55,7 +35,7 @@ export function BootcampSection() {
               <Calendar className="h-5 w-5" />
             </span>
             <h3 className="mt-5 font-display text-lg font-semibold tracking-tight">
-              Kickoff details
+              {copy.kickoffTitle}
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
               {settings.bootcampKickoffText ||
@@ -85,15 +65,21 @@ export function BootcampSection() {
               <Sparkles className="h-5 w-5" />
             </span>
             <h3 className="mt-5 font-display text-lg font-semibold tracking-tight">
-              Before Day 1, please prepare
+              {copy.prepareTitle}
             </h3>
             <ul className="mt-5 space-y-3">
-              {PREP_CHECKLIST.map((item) => (
-                <li key={item.text} className="flex items-start gap-2.5 text-sm text-foreground/80">
-                  <item.icon className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
-                  {item.text}
-                </li>
-              ))}
+              {copy.checklist.map((item) => {
+                const Icon = getContentIcon(item.icon);
+                return (
+                  <li
+                    key={item.text}
+                    className="flex items-start gap-2.5 text-sm text-foreground/80"
+                  >
+                    <Icon className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
+                    {item.text}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </Reveal>
@@ -105,10 +91,10 @@ export function BootcampSection() {
               <MessageCircle className="h-5 w-5" />
             </span>
             <h3 className="mt-5 font-display text-lg font-semibold tracking-tight">
-              Stay connected
+              {copy.connectTitle}
             </h3>
             <p className="mt-2 text-sm leading-relaxed text-muted-foreground">
-              Keep inviting others — registration is still open. Let's build together.
+              {copy.connectDescription}
             </p>
             <div className="mt-5 space-y-2.5">
               <a
@@ -117,7 +103,7 @@ export function BootcampSection() {
                 rel="noopener noreferrer"
                 className="group inline-flex min-h-[44px] w-full items-center justify-between rounded-full bg-[#25D366] px-4 py-2.5 text-sm font-medium text-white shadow-lg shadow-[#25D366]/20 transition-all duration-300 hover:bg-[#20BD5A]"
               >
-                Join WhatsApp Community{" "}
+                {copy.whatsappLabel}{" "}
                 <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </a>
               <a
@@ -126,7 +112,7 @@ export function BootcampSection() {
                 rel="noopener noreferrer"
                 className="group inline-flex min-h-[44px] w-full items-center justify-between rounded-full border border-soft-border/70 bg-foreground/5 px-4 py-2.5 text-sm font-medium text-foreground transition-colors hover:border-primary/50 hover:text-primary"
               >
-                Follow on Instagram <Instagram className="h-3.5 w-3.5" />
+                {copy.instagramLabel} <Instagram className="h-3.5 w-3.5" />
               </a>
               <a
                 href={settings.bootcampRegisterUrl || "#"}
@@ -134,7 +120,7 @@ export function BootcampSection() {
                 rel="noopener noreferrer"
                 className="group inline-flex min-h-[44px] w-full items-center justify-between rounded-full bg-foreground px-4 py-2.5 text-sm font-medium text-background transition-colors hover:bg-primary"
               >
-                Register now{" "}
+                {copy.registerLabel}{" "}
                 <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </a>
             </div>

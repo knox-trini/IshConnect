@@ -5,6 +5,7 @@ import { Loader2, Mail, MapPin, Phone, Send } from "lucide-react";
 import { toast } from "sonner";
 import { sendContact } from "@/lib/email";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 import { Section, SectionHeading } from "../Section";
 import { Reveal } from "../Reveal";
@@ -21,7 +22,8 @@ type Values = z.infer<typeof schema>;
 
 export function ContactSection() {
   const settings = useSiteSettings();
-  const phoneHref = `tel:${(settings.contactPhone || "").replace(/[^\d+]/g, "")}`;
+  const { contact: copy } = useSiteContent();
+  const form = copy.form;
   const {
     register,
     handleSubmit,
@@ -32,26 +34,27 @@ export function ContactSection() {
   const onSubmit = async (v: Values) => {
     try {
       await sendContact(v);
-      toast.success("Message sent", { description: "We'll respond within one business day." });
+      toast.success(form.successTitle, { description: form.successDescription });
       reset();
     } catch (e: unknown) {
       const err = e as Record<string, unknown>;
       const msg = err?.text ?? err?.message ?? JSON.stringify(err);
       console.error("EmailJS error:", msg);
-      toast.error("Email failed", { description: String(msg) });
+      toast.error(form.errorTitle, { description: String(msg) });
     }
   };
 
   return (
     <Section id="contact">
       <SectionHeading
-        eyebrow="Contact"
+        eyebrow={copy.eyebrow}
         title={
           <>
-            Let's build something <span className="text-primary">remarkable.</span>
+            {copy.title} <span className="text-primary">{copy.highlight}</span>
+            {copy.suffix}
           </>
         }
-        description="Tell us about your project, your program, or just say hello — we read every message."
+        description={copy.description}
       />
 
       <div className="mt-14 grid gap-8 lg:grid-cols-12">
@@ -60,19 +63,19 @@ export function ContactSection() {
             <ContactCard
               icon={<Mail className="h-4 w-4" />}
               title="Email"
-              value={settings.contactEmail || "ishconnlab@gmail.com"}
-              href={`mailto:${settings.contactEmail || "ishconnlab@gmail.com"}`}
+              value={copy.cards.email || settings.contactEmail || "ishconnlab@gmail.com"}
+              href={`mailto:${copy.cards.email || settings.contactEmail || "ishconnlab@gmail.com"}`}
             />
             <ContactCard
               icon={<Phone className="h-4 w-4" />}
               title="Phone"
-              value={settings.contactPhone || "+250 787 377 750"}
-              href={phoneHref}
+              value={copy.cards.phone || settings.contactPhone || "+250 787 377 750"}
+              href={`tel:${(copy.cards.phone || settings.contactPhone || "").replace(/[^\d+]/g, "")}`}
             />
             <ContactCard
               icon={<MapPin className="h-4 w-4" />}
               title="Studio"
-              value={settings.contactAddress || "KG 11 Ave, Kigali, Rwanda"}
+              value={copy.cards.studio || settings.contactAddress || "KG 11 Ave, Kigali, Rwanda"}
             />
           </div>
         </Reveal>
@@ -83,45 +86,45 @@ export function ContactSection() {
             className="space-y-4 rounded-3xl border border-orange-100 bg-[#FFF7ED] p-5 shadow-soft sm:p-8"
           >
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Full name" error={errors.name?.message}>
+              <Field label={form.name} error={errors.name?.message}>
                 <input
                   {...register("name")}
-                  placeholder="Jane Mukamana"
+                  placeholder={form.namePlaceholder}
                   className="w-full rounded-2xl border border-orange-200 bg-white px-3.5 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 transition-all duration-200 focus:border-[#F97316] focus:shadow-[0_0_0_4px_rgba(249,115,22,0.15)] max-sm:px-3 max-sm:py-2.5 max-sm:text-[13px]"
                 />
               </Field>
-              <Field label="Email" error={errors.email?.message}>
+              <Field label={form.email} error={errors.email?.message}>
                 <input
                   type="email"
                   {...register("email")}
-                  placeholder="you@example.com"
+                  placeholder={form.emailPlaceholder}
                   className="w-full rounded-2xl border border-orange-200 bg-white px-3.5 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 transition-all duration-200 focus:border-[#F97316] focus:shadow-[0_0_0_4px_rgba(249,115,22,0.15)] max-sm:px-3 max-sm:py-2.5 max-sm:text-[13px]"
                 />
               </Field>
             </div>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              <Field label="Phone (optional)" error={errors.phone?.message}>
+              <Field label={form.phone} error={errors.phone?.message}>
                 <input
                   {...register("phone")}
-                  placeholder="+250 78x xxx xxx"
+                  placeholder={form.phonePlaceholder}
                   className="w-full rounded-2xl border border-orange-200 bg-white px-3.5 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 transition-all duration-200 focus:border-[#F97316] focus:shadow-[0_0_0_4px_rgba(249,115,22,0.15)] max-sm:px-3 max-sm:py-2.5 max-sm:text-[13px]"
                 />
               </Field>
-              <Field label="Subject (optional)">
+              <Field label={form.subject}>
                 <input
                   {...register("subject")}
-                  placeholder="Project · Partnership · Other"
+                  placeholder={form.subjectPlaceholder}
                   className="w-full rounded-2xl border border-orange-200 bg-white px-3.5 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 transition-all duration-200 focus:border-[#F97316] focus:shadow-[0_0_0_4px_rgba(249,115,22,0.15)] max-sm:px-3 max-sm:py-2.5 max-sm:text-[13px]"
                 />
               </Field>
             </div>
 
-            <Field label="Message" error={errors.message?.message}>
+            <Field label={form.message} error={errors.message?.message}>
               <textarea
                 rows={5}
                 {...register("message")}
-                placeholder="Tell us what you're building…"
+                placeholder={form.messagePlaceholder}
                 className="w-full rounded-2xl border border-orange-200 bg-white px-3.5 py-3 text-sm text-gray-900 outline-none placeholder:text-gray-400 transition-all duration-200 focus:border-[#F97316] focus:shadow-[0_0_0_4px_rgba(249,115,22,0.15)] resize-none max-sm:px-3 max-sm:py-2.5 max-sm:text-[13px]"
               />
             </Field>
@@ -134,11 +137,11 @@ export function ContactSection() {
               {isSubmitting ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  Sending…
+                  {form.sending}
                 </>
               ) : (
                 <>
-                  Send message
+                  {form.submit}
                   <Send className="h-4 w-4" />
                 </>
               )}

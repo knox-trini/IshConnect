@@ -3,18 +3,16 @@ import { motion } from "framer-motion";
 import { ArrowLeft, Home } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
 import { BreadcrumbJsonLd } from "@/components/JsonLd";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 const easeInOut = [0.16, 1, 0.3, 1] as const;
 
 export function NotFound() {
+  const { global } = useSiteContent();
+  const copy = global.notFound;
   return (
     <>
-      <SEOHead
-        title="Page Not Found · IshConnect"
-        description="The page you're looking for doesn't exist or has been moved. Return to IshConnect — Kigali's leading software development and AI innovation studio."
-        canonical="/404"
-        noindex
-      />
+      <SEOHead title={copy.metaTitle} description={copy.metaDescription} canonical="/404" noindex />
       <BreadcrumbJsonLd
         items={[
           { name: "Home", url: "/" },
@@ -39,25 +37,23 @@ export function NotFound() {
           </motion.span>
 
           <h1 className="mt-4 font-display text-2xl font-semibold tracking-tight text-foreground sm:text-3xl">
-            Page not found
+            {copy.title}
           </h1>
 
-          <p className="mt-2 text-sm text-muted-foreground">
-            The page you're looking for doesn't exist or has been moved.
-          </p>
+          <p className="mt-2 text-sm text-muted-foreground">{copy.description}</p>
 
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <Link
               to="/"
               className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background transition-all hover:opacity-90"
             >
-              <Home className="h-4 w-4" /> Go home
+              <Home className="h-4 w-4" /> {copy.home}
             </Link>
             <Link
               to="/work"
               className="inline-flex items-center gap-2 rounded-full border border-soft-border/60 bg-surface px-5 py-3 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
             >
-              <ArrowLeft className="h-4 w-4" /> View our work
+              <ArrowLeft className="h-4 w-4" /> {copy.work}
             </Link>
           </div>
         </motion.div>

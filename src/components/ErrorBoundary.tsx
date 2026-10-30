@@ -2,6 +2,7 @@ import { Component, type ReactNode } from "react";
 import { useNavigate } from "react-router-dom";
 import { Helmet } from "react-helmet-async";
 import { AlertTriangle, RefreshCw, Home } from "lucide-react";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 interface ErrorBoundaryProps {
   children: ReactNode;
@@ -19,15 +20,13 @@ function ErrorFallbackContent({ error, reset }: { error: Error; reset: () => voi
   console.groupEnd();
 
   const navigate = useNavigate();
+  const copy = useSiteContent().global.errorPage;
 
   return (
     <>
       <Helmet>
-        <title>This page didn't load · IshConnect</title>
-        <meta
-          name="description"
-          content="Something went wrong on our end. Please try refreshing or head back home."
-        />
+        <title>{copy.metaTitle}</title>
+        <meta name="description" content={copy.metaDescription} />
         <meta name="robots" content="noindex,nofollow" />
       </Helmet>
       <div className="flex min-h-screen items-center justify-center bg-background px-4">
@@ -37,16 +36,14 @@ function ErrorFallbackContent({ error, reset }: { error: Error; reset: () => voi
           </div>
 
           <h1 className="mt-4 font-display text-xl font-semibold tracking-tight text-foreground">
-            This page didn't load
+            {copy.title}
           </h1>
 
-          <p className="mt-2 text-sm text-muted-foreground">
-            Something went wrong on our end. You can try refreshing or head back home.
-          </p>
+          <p className="mt-2 text-sm text-muted-foreground">{copy.description}</p>
 
           <details className="mt-4 text-left">
             <summary className="cursor-pointer text-xs text-muted-foreground hover:text-foreground">
-              Error details
+              {copy.details}
             </summary>
             <pre className="mt-2 max-h-32 overflow-auto rounded-md bg-muted p-3 text-[10px] leading-relaxed text-muted-foreground">
               {error.name}: {error.message}
@@ -63,13 +60,13 @@ function ErrorFallbackContent({ error, reset }: { error: Error; reset: () => voi
               }}
               className="inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background transition-all hover:opacity-90"
             >
-              <RefreshCw className="h-4 w-4" /> Try again
+              <RefreshCw className="h-4 w-4" /> {copy.retry}
             </button>
             <button
               onClick={() => navigate("/")}
               className="inline-flex items-center gap-2 rounded-full border border-soft-border/60 bg-surface px-5 py-3 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
             >
-              <Home className="h-4 w-4" /> Go home
+              <Home className="h-4 w-4" /> {copy.home}
             </button>
           </div>
         </div>

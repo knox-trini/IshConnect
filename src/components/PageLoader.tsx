@@ -1,4 +1,7 @@
+import { useSiteContent } from "@/hooks/useSiteContent";
+
 export function PageLoader() {
+  const { global: siteGlobal } = useSiteContent();
   return (
     <div className="page-loader" role="status" aria-label="IshConnect is loading">
       <div className="page-loader__inner">
@@ -14,16 +17,25 @@ export function PageLoader() {
         </div>
         <span className="page-loader__skel page-loader__hero" />
         <div className="page-loader__rows">
-          <span className="page-loader__skel" style={{ height: 14, width: "92%", borderRadius: 6 }} />
-          <span className="page-loader__skel" style={{ height: 14, width: "100%", borderRadius: 6 }} />
-          <span className="page-loader__skel" style={{ height: 14, width: "72%", borderRadius: 6 }} />
+          <span
+            className="page-loader__skel"
+            style={{ height: 14, width: "92%", borderRadius: 6 }}
+          />
+          <span
+            className="page-loader__skel"
+            style={{ height: 14, width: "100%", borderRadius: 6 }}
+          />
+          <span
+            className="page-loader__skel"
+            style={{ height: 14, width: "72%", borderRadius: 6 }}
+          />
         </div>
         <div className="page-loader__grid">
           <span className="page-loader__skel page-loader__card" />
           <span className="page-loader__skel page-loader__card" />
         </div>
       </div>
-      <span className="sr-only">Loading, please wait…</span>
+      <span className="sr-only">{siteGlobal.pageLoader}</span>
     </div>
   );
 }

@@ -4,23 +4,38 @@ import { Linkedin } from "lucide-react";
 import { TEAM_CONTENT } from "@/lib/team-content";
 import { resolveCmsImage } from "@/lib/cms-api";
 import { usePublicContent } from "@/hooks/usePublicContent";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
-type TeamMember = { slug: string; name: string; role: string; image?: string; linkedin?: string; leadership?: boolean; order?: number };
+type TeamMember = {
+  slug: string;
+  name: string;
+  role: string;
+  image?: string;
+  linkedin?: string;
+  leadership?: boolean;
+  order?: number;
+};
 
 export function TeamSection() {
+  const { team: copy } = useSiteContent();
   const members = usePublicContent<TeamMember>("team", TEAM_CONTENT);
-  const leads = members.filter((member) => member.leadership).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
-  const team = members.filter((member) => !member.leadership).sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  const leads = members
+    .filter((member) => member.leadership)
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
+  const team = members
+    .filter((member) => !member.leadership)
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   return (
     <Section id="team">
       <SectionHeading
-        eyebrow="Team"
+        eyebrow={copy.eyebrow}
         title={
           <>
-            The minds behind the <span className="text-primary">mission.</span>
+            {copy.title} <span className="text-primary">{copy.highlight}</span>
+            {copy.suffix}
           </>
         }
-        description="A multidisciplinary team of engineers, designers, and educators building impactful digital experiences across Africa."
+        description={copy.description}
       />
 
       {/* LEADERS */}
@@ -31,7 +46,7 @@ export function TeamSection() {
               <div className="relative flex aspect-[4/5] items-center justify-center overflow-hidden bg-gradient-to-br from-[#FFF7ED] via-orange-50 to-white">
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(249,115,22,0.18),transparent_60%)]" />
                 <div className="absolute left-4 top-4 rounded-full bg-white px-3 py-1 text-[11px] font-semibold uppercase tracking-wider text-[#F97316] shadow-sm">
-                  Leadership
+                  {copy.leadershipLabel}
                 </div>
                 <a
                   href={member.linkedin || "#"}

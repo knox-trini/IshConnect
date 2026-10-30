@@ -19,6 +19,7 @@ import { BreadcrumbJsonLd, CreativeWorkJsonLd, ProjectJsonLd } from "@/component
 import { FaqAccordion } from "@/components/FaqAccordion";
 import { PROJECTS, type Project } from "@/lib/projects";
 import { usePublicContent } from "@/hooks/usePublicContent";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 const easeInOut = [0.16, 1, 0.3, 1] as const;
 
@@ -131,6 +132,8 @@ function FeatureList({ items }: { items: string[] }) {
 }
 
 export function ProjectCaseStudy() {
+  const { global } = useSiteContent();
+  const copy = global.projectDetail;
   const { slug } = useParams<{ slug: string }>();
   const projects = usePublicContent<Project>("projects", PROJECTS);
   const project = slug ? projects.find((item) => item.slug === slug) : undefined;
@@ -140,21 +143,21 @@ export function ProjectCaseStudy() {
       <div className="flex min-h-screen items-center justify-center px-4">
         <div className="max-w-md text-center">
           <SEOHead
-            title="Project not found · IshConnect"
-            description="The project you're looking for doesn't exist. Browse our portfolio of software, AI, and digital products by IshConnect Rwanda."
+            title={copy.notFoundMetaTitle}
+            description={copy.notFoundMetaDescription}
             canonical="/work"
             noindex
           />
           <h1 className="text-6xl font-bold text-foreground">404</h1>
-          <h2 className="mt-4 text-xl font-semibold text-foreground">Project not found</h2>
+          <h2 className="mt-4 text-xl font-semibold text-foreground">{copy.notFoundTitle}</h2>
           <p className="mt-2 text-sm text-muted-foreground">
-            The project "{slug}" doesn't exist or has been removed.
+            {copy.notFoundDescription.replace("{slug}", slug ?? "")}
           </p>
           <Link
             to="/work"
             className="mt-6 inline-flex items-center gap-2 rounded-full bg-foreground px-5 py-3 text-sm font-medium text-background transition-all hover:opacity-90"
           >
-            <ArrowLeft className="h-4 w-4" /> Back to projects
+            <ArrowLeft className="h-4 w-4" /> {copy.notFoundBack}
           </Link>
         </div>
       </div>
@@ -199,7 +202,7 @@ export function ProjectCaseStudy() {
                 to="/work"
                 className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground transition-colors hover:text-primary"
               >
-                <ArrowLeft className="h-3.5 w-3.5" /> Back to all projects
+                <ArrowLeft className="h-3.5 w-3.5" /> {copy.backToAll}
               </Link>
             </motion.div>
 
@@ -241,15 +244,15 @@ export function ProjectCaseStudy() {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 rounded-full border border-soft-border/60 bg-surface px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
                   >
-                    <Github className="h-3.5 w-3.5" /> View Code
+                    <Github className="h-3.5 w-3.5" /> {copy.viewCode}
                   </a>
                 ) : (
                   <span
                     aria-disabled="true"
-                    title="Add a repository URL in the project settings to enable this link."
+                    title={copy.repoMissingTitle}
                     className="inline-flex cursor-not-allowed items-center gap-1.5 rounded-full border border-soft-border/60 bg-surface px-4 py-2 text-sm font-medium text-muted-foreground/60"
                   >
-                    <Github className="h-3.5 w-3.5" /> View Code
+                    <Github className="h-3.5 w-3.5" /> {copy.viewCode}
                   </span>
                 )}
                 {project.liveUrl && /^https?:\/\/\S+$/i.test(project.liveUrl) && (
@@ -259,7 +262,7 @@ export function ProjectCaseStudy() {
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1.5 rounded-full border border-soft-border/60 bg-surface px-4 py-2 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
                   >
-                    <ExternalLink className="h-3.5 w-3.5" /> View Live Project
+                    <ExternalLink className="h-3.5 w-3.5" /> {copy.viewLive}
                   </a>
                 )}
               </div>
@@ -286,22 +289,22 @@ export function ProjectCaseStudy() {
         <div className="mx-auto max-w-6xl px-6 pb-20 sm:pb-28">
           <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
             {/* Problem */}
-            <SectionBlock icon={<Target className="h-5 w-5" />} title="The Problem">
+            <SectionBlock icon={<Target className="h-5 w-5" />} title={copy.problem}>
               <p>{project.problem}</p>
             </SectionBlock>
 
             {/* Solution */}
-            <SectionBlock icon={<Lightbulb className="h-5 w-5" />} title="Our Solution">
+            <SectionBlock icon={<Lightbulb className="h-5 w-5" />} title={copy.solution}>
               <p>{project.solution}</p>
             </SectionBlock>
 
             {/* Client */}
-            <SectionBlock icon={<Users className="h-5 w-5" />} title="Client">
+            <SectionBlock icon={<Users className="h-5 w-5" />} title={copy.client}>
               <p>{project.client}</p>
             </SectionBlock>
 
             {/* Challenges */}
-            <SectionBlock icon={<Code2 className="h-5 w-5" />} title="Challenges">
+            <SectionBlock icon={<Code2 className="h-5 w-5" />} title={copy.challenges}>
               <p>{project.challenges}</p>
             </SectionBlock>
           </div>
@@ -318,7 +321,7 @@ export function ProjectCaseStudy() {
               <CheckCircle2 className="h-5 w-5" />
             </div>
             <h3 className="font-display text-xl font-semibold tracking-tight text-foreground">
-              Key Features
+              {copy.keyFeatures}
             </h3>
             <div className="mt-4 grid gap-2 sm:grid-cols-2">
               <FeatureList items={project.features} />
@@ -327,10 +330,10 @@ export function ProjectCaseStudy() {
 
           {/* UI Decisions & Workflow */}
           <div className="mt-8 grid gap-6 lg:grid-cols-2 lg:gap-8">
-            <SectionBlock title="UI/UX Decisions">
+            <SectionBlock title={copy.uiDecisions}>
               <p>{project.uiDecisions}</p>
             </SectionBlock>
-            <SectionBlock title="Development Workflow">
+            <SectionBlock title={copy.workflow}>
               <p>{project.workflow}</p>
             </SectionBlock>
           </div>
@@ -347,7 +350,7 @@ export function ProjectCaseStudy() {
               <Calendar className="h-5 w-5" />
             </div>
             <h3 className="font-display text-xl font-semibold tracking-tight text-foreground">
-              Project Timeline
+              {copy.timeline}
             </h3>
             <div className="mt-6">
               {project.timeline.map((t, i) => (
@@ -358,10 +361,10 @@ export function ProjectCaseStudy() {
 
           {/* Results & Impact */}
           <div className="mt-8 grid gap-6 lg:grid-cols-2 lg:gap-8">
-            <SectionBlock icon={<Target className="h-5 w-5" />} title="Results">
+            <SectionBlock icon={<Target className="h-5 w-5" />} title={copy.results}>
               <p>{project.results}</p>
             </SectionBlock>
-            <SectionBlock icon={<Sparkles className="h-5 w-5" />} title="Impact">
+            <SectionBlock icon={<Sparkles className="h-5 w-5" />} title={copy.impact}>
               <p>{project.impact}</p>
             </SectionBlock>
           </div>
@@ -377,13 +380,13 @@ export function ProjectCaseStudy() {
             <div className="mb-6">
               <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/5 px-3 py-1 text-xs font-medium text-primary">
                 <Clock className="h-3 w-3" />
-                FAQ
+                {copy.faq}
               </span>
               <h3 className="mt-3 font-display text-2xl font-semibold tracking-tight text-foreground">
-                Frequently Asked Questions
+                {copy.faqTitle}
               </h3>
               <p className="mt-1 text-sm text-muted-foreground">
-                Technical insights and decisions behind {project.title}.
+                {copy.faqDescriptionPrefix} {project.title}.
               </p>
             </div>
             <FaqAccordion items={project.faqs} />
@@ -400,7 +403,7 @@ export function ProjectCaseStudy() {
               to="/work"
               className="inline-flex items-center gap-2 rounded-full border border-soft-border/60 bg-surface px-5 py-3 text-sm font-medium text-foreground transition-colors hover:border-primary hover:text-primary"
             >
-              <ArrowLeft className="h-4 w-4" /> View all projects by IshConnect
+              <ArrowLeft className="h-4 w-4" /> {copy.backToProjects}
             </Link>
           </motion.div>
         </div>

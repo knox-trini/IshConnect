@@ -284,6 +284,7 @@ test("health, CORS, auth, events, and content API contract", async (t) => {
       "programs",
       "projects",
       "websites",
+      "pages",
       "settings",
     ]) {
       const publicList = await request("GET", "/api/content/" + type);
@@ -332,6 +333,46 @@ test("health, CORS, auth, events, and content API contract", async (t) => {
       (await request("DELETE", "/api/admin/content/settings/" + settingsId)).status,
       200,
     );
+
+    const page = await request("POST", "/api/admin/content/pages", {
+      slug: "Site Test Page",
+      title: "Site Test Page",
+      content: { hero: { title: "Hello", primaryUrl: "/contact" } },
+      order: 1,
+      isPublished: true,
+    });
+    assert.equal(page.status, 201, JSON.stringify(page.data));
+    assert.equal(page.data.data.slug, "site-test-page");
+    const pageId = page.data.data.recordId;
+    const publicPage = await request("GET", "/api/content/pages/site-test-page", undefined, false);
+    assert.equal(publicPage.status, 200);
+    assert.equal(publicPage.data.data.content.hero.title, "Hello");
+    const updatedPage = await request("PATCH", "/api/admin/content/pages/" + pageId, {
+      content: { hero: { title: "Updated", primaryUrl: "/work" } },
+    });
+    assert.equal(updatedPage.status, 200, JSON.stringify(updatedPage.data));
+    assert.equal(updatedPage.data.data.content.hero.primaryUrl, "/work");
+    assert.equal(
+      (
+        await request("POST", "/api/admin/content/pages", {
+          slug: "bad-page",
+          title: "Bad Page",
+          content: [],
+        })
+      ).status,
+      400,
+    );
+    assert.equal(
+      (
+        await request("POST", "/api/admin/content/pages", {
+          slug: "bad-page-url",
+          title: "Bad Page URL",
+          content: { hero: { primaryUrl: "javascript:alert(1)" } },
+        })
+      ).status,
+      400,
+    );
+    assert.equal((await request("DELETE", "/api/admin/content/pages/" + pageId)).status, 200);
 
     assert.equal(
       (await request("POST", "/api/admin/content/team", { slug: "x", name: "X", role: "R" }, false))

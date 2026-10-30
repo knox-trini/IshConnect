@@ -1,5 +1,6 @@
 import { Reveal } from "../Reveal";
 import { usePublicContent } from "@/hooks/usePublicContent";
+import { useSiteContent } from "@/hooks/useSiteContent";
 
 const PARTNERS = [
   { name: "mCoders", href: "https://mcoders.minict.gov.rw/" },
@@ -36,21 +37,27 @@ function PartnerBadge({ name, href }: { name: string; href?: string }) {
 }
 
 export function PartnersSection() {
-  const partners = usePublicContent<Partner>("partners", PARTNERS.map((p, order) => ({ ...p, slug: p.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"), order })));
+  const { home } = useSiteContent();
+  const partners = usePublicContent<Partner>(
+    "partners",
+    PARTNERS.map((p, order) => ({
+      ...p,
+      slug: p.name.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+      order,
+    })),
+  );
   const orderedPartners = [...partners].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   return (
     <section className="border-y border-soft-border/60 bg-surface-elevated/50 overflow-hidden">
       <div className="mx-auto max-w-6xl px-6 py-16 text-center">
         <Reveal variant="fade-up" duration={500}>
           <p className="text-xs font-medium uppercase tracking-widest text-muted-foreground">
-            Trusted By Leading Institutions &amp; Partners
+            {home.partners.heading}
           </p>
         </Reveal>
 
         <div className="marquee-fade relative mt-8 overflow-hidden">
-          <div
-            className="flex items-center gap-3 marquee-track"
-          >
+          <div className="flex items-center gap-3 marquee-track">
             {[...orderedPartners, ...orderedPartners].map((p, i) => (
               <PartnerBadge key={`${p.slug}-${i}`} name={p.name} href={p.channelUrl || p.href} />
             ))}

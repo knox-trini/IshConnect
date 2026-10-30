@@ -4,35 +4,16 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Menu, X, ArrowUpRight, ChevronDown } from "lucide-react";
 import { Logo } from "./Logo";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { useSiteContent } from "@/hooks/useSiteContent";
 import { findApplicationLink } from "@/lib/site-settings";
-
-const PRIMARY_NAV = [
-  { to: "/", label: "Home" },
-  { to: "/solutions", label: "Services" },
-  { to: "/work", label: "Work" },
-  { to: "/academy", label: "Academy" },
-  { to: "/about", label: "About" },
-  { to: "/contact", label: "Contact" },
-] as const;
-
-const SECONDARY_NAV = [
-  { to: "/webcare", label: "WebCare" },
-  { to: "/community", label: "Community" },
-  { to: "/founder", label: "Founder" },
-  { to: "/team", label: "Team" },
-  { to: "/challenges", label: "Challenges" },
-  { to: "/testimonials", label: "Testimonials" },
-] as const;
-
-const EXTERNAL_NAV = [
-  { href: "https://lab.ishconnect.rw", label: "Internship", badge: "LAB" },
-] as const;
 
 export const Navbar = memo(function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [showEcosystem, setShowEcosystem] = useState(false);
   const { pathname } = useLocation();
+  const { global: siteGlobal } = useSiteContent();
+  const { primary, secondary, external, moreLabel } = siteGlobal.nav;
   const settings = useSiteSettings();
   const startProject = findApplicationLink(settings, "start-project", "/contact");
   const startProjectExternal = startProject.openInNewTab || /^https?:\/\//i.test(startProject.url);
@@ -75,7 +56,7 @@ export const Navbar = memo(function Navbar() {
 
         {/* Desktop nav */}
         <ul className="hidden items-center gap-1 lg:flex" role="list">
-          {PRIMARY_NAV.map((item) => {
+          {primary.map((item) => {
             const active = pathname === item.to;
             return (
               <li key={item.to}>
@@ -109,7 +90,7 @@ export const Navbar = memo(function Navbar() {
               aria-expanded={showEcosystem}
               aria-haspopup="true"
             >
-              More
+              {moreLabel}
               <ChevronDown
                 className={`h-3.5 w-3.5 transition-transform duration-200 ${showEcosystem ? "rotate-180" : ""}`}
               />
@@ -125,7 +106,7 @@ export const Navbar = memo(function Navbar() {
                   onMouseEnter={() => setShowEcosystem(true)}
                   onMouseLeave={() => setShowEcosystem(false)}
                 >
-                  {SECONDARY_NAV.map((item) => (
+                  {secondary.map((item) => (
                     <Link
                       key={item.to}
                       to={item.to}
@@ -139,7 +120,7 @@ export const Navbar = memo(function Navbar() {
                     </Link>
                   ))}
                   <div className="mt-1 border-t border-soft-border/30 pt-1">
-                    {EXTERNAL_NAV.map((item) => (
+                    {external.map((item) => (
                       <a
                         key={item.href}
                         href={item.href}
@@ -201,7 +182,7 @@ export const Navbar = memo(function Navbar() {
             className="absolute inset-x-3 top-[68px] rounded-3xl border border-soft-border/60 bg-surface p-4 shadow-elevated lg:hidden"
           >
             <ul className="flex flex-col">
-              {PRIMARY_NAV.map((item) => (
+              {primary.map((item) => (
                 <li key={item.to}>
                   <Link
                     to={item.to}
@@ -217,9 +198,9 @@ export const Navbar = memo(function Navbar() {
               ))}
               <li className="mt-1 border-t border-soft-border/40 pt-1">
                 <p className="px-4 py-1 text-[11px] font-medium uppercase tracking-wider text-muted-foreground">
-                  More
+                  {moreLabel}
                 </p>
-                {SECONDARY_NAV.map((item) => (
+                {secondary.map((item) => (
                   <Link
                     key={item.to}
                     to={item.to}
@@ -232,7 +213,7 @@ export const Navbar = memo(function Navbar() {
                     {item.label}
                   </Link>
                 ))}
-                {EXTERNAL_NAV.map((item) => (
+                {external.map((item) => (
                   <a
                     key={item.href}
                     href={item.href}

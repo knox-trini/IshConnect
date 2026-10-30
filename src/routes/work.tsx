@@ -1,14 +1,13 @@
 ﻿import { SEOHead } from "@/components/SEOHead";
 import { BreadcrumbJsonLd, ItemListJsonLd } from "@/components/JsonLd";
-import { PAGE_SEO } from "@/lib/seo";
 import { PROJECTS, type Project } from "@/lib/projects";
 import { usePublicContent } from "@/hooks/usePublicContent";
+import { usePageSeo } from "@/hooks/useSiteContent";
 import { WorkSection } from "@/components/sections/WorkSection";
 import { TrustStats } from "@/components/sections/TrustStats";
 
-const config = PAGE_SEO.work;
-
 export function Work() {
+  const config = usePageSeo("work");
   const projects = usePublicContent<Project>("projects", PROJECTS);
   const projectItems = projects.map((p) => ({ name: p.title, url: "/work/" + p.slug }));
   return (
@@ -23,5 +22,3 @@ export function Work() {
     </>
   );
 }
-
-

@@ -1,118 +1,26 @@
-﻿import { useEffect, useRef, useState } from "react";
+﻿import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  motion,
-  AnimatePresence,
-  useInView,
-  useMotionValue,
-  useTransform,
-  animate,
-} from "framer-motion";
-import {
-  Sparkles,
-  Users,
-  Heart,
   CheckCircle,
   Globe,
   ArrowUpRight,
   ExternalLink,
   Quote,
-  Shield,
   Award,
-  Code2,
   GraduationCap,
   X,
 } from "lucide-react";
 import iconnbookImg from "@/assets/projects/iconnbook.png";
 import { usePublicContent } from "@/hooks/usePublicContent";
+import { useSiteContent } from "@/hooks/useSiteContent";
+import { getContentIcon } from "@/lib/content-icons";
 import { resolveCmsImage } from "@/lib/cms-api";
 import { WEBSITES, type Website } from "@/lib/websites";
 import { Section, SectionHeading } from "../Section";
 import { Reveal } from "../Reveal";
+import type { SiteContent } from "@/lib/site-content";
 
-const DEVQUEENS_PILLARS = [
-  {
-    icon: Sparkles,
-    title: "Mentorship",
-    text: "1:1 guidance from senior women engineers shipping at top companies.",
-  },
-  {
-    icon: Users,
-    title: "Community",
-    text: "A safe, ambitious sisterhood of builders, founders and creators.",
-  },
-  {
-    icon: Heart,
-    title: "Empowerment",
-    text: "Scholarships, devices, and pathways into world-class tech careers.",
-  },
-];
-
-const DEVQUEENS_STATS = [
-  { value: 120, suffix: "+", label: "Mentees" },
-  { value: 32, suffix: "", label: "Mentors" },
-  { value: 9, suffix: "", label: "Cities" },
-];
-
-const WEBCARE_FEATURES = [
-  "Custom websites built from scratch — no templates",
-  "Focused on Rwandan schools, universities, and businesses",
-  "12 months of post-launch maintenance included",
-  "Fully responsive — optimised for mobile and desktop",
-];
-
-const SUCCESS_STORIES = [
-  {
-    icon: Shield,
-    initials: "T",
-    name: "Tendani",
-    role: "Cybersecurity Internship",
-    meta: "Completed · 2025",
-    text: "Tendani completed the IshConnect cybersecurity internship in 2025, gaining hands-on experience in network security, threat analysis, and defensive security practices under the direct mentorship of senior security engineers.",
-  },
-  {
-    icon: Code2,
-    initials: "RA",
-    name: "Ramla Abdullahi",
-    role: "Computer Science & Cyber Student",
-    meta: "Cyber Internship",
-    text: "Ramla Abdullahi is a computer science & cybersecurity student who sharpened her practical skills through the IshConnect cyber internship — bridging academic theory with real-world security challenges on live projects.",
-  },
-  {
-    icon: Award,
-    initials: "AM",
-    name: "AbdulAziz Memon",
-    role: "CEO, Xantrail Studio",
-    meta: "Completed Full Stack",
-    text: "AbdulAziz Memon, CEO of Xantrail Studio, completed the full-stack program with IshConnect — turning his technical training into a thriving studio that ships web products for real clients.",
-  },
-];
-
-export type SuccessStory = (typeof SUCCESS_STORIES)[number];
-
-function Counter({ to, suffix, delay = 0 }: { to: number; suffix: string; delay?: number }) {
-  const ref = useRef<HTMLSpanElement>(null);
-  const inView = useInView(ref, { once: true, margin: "-80px" });
-  const mv = useMotionValue(0);
-  const rounded = useTransform(mv, (v) => Math.round(v).toString());
-
-  useEffect(() => {
-    if (inView) {
-      const controls = animate(mv, to, {
-        duration: 1.2,
-        delay,
-        ease: [0.16, 1, 0.3, 1],
-      });
-      return controls.stop;
-    }
-  }, [inView, mv, to, delay]);
-
-  return (
-    <span ref={ref} className="tabular-nums">
-      <motion.span>{rounded}</motion.span>
-      {suffix}
-    </span>
-  );
-}
+export type SuccessStory = SiteContent["home"]["initiatives"]["devqueens"]["stories"][number];
 
 function ConstellationLines() {
   return (
@@ -150,7 +58,11 @@ function ConstellationLines() {
   );
 }
 
-function DevQueensAchievement() {
+function DevQueensAchievement({
+  achievement,
+}: {
+  achievement: SiteContent["home"]["initiatives"]["devqueens"]["achievement"];
+}) {
   const font = "ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif";
   return (
     <div className="relative mt-10 overflow-hidden rounded-3xl border border-violet-200/60 bg-linear-to-br from-violet-500/10 via-white/60 to-secondary/10 p-6 sm:p-8">
@@ -282,7 +194,7 @@ function DevQueensAchievement() {
             />
             <circle cx="190" cy="176" r="3.5" fill="url(#dq-ach-gold)" />
             <text x="202" y="180" textAnchor="middle" fontSize="12" fontWeight="600" fill="#4c1d95">
-              120+ Mentees
+              {achievement.mentees}
             </text>
           </g>
           <g>
@@ -298,7 +210,7 @@ function DevQueensAchievement() {
             />
             <circle cx="297" cy="176" r="3.5" fill="url(#dq-ach-violet)" />
             <text x="309" y="180" textAnchor="middle" fontSize="12" fontWeight="600" fill="#4c1d95">
-              32 Mentors
+              {achievement.mentors}
             </text>
           </g>
           <g>
@@ -314,7 +226,7 @@ function DevQueensAchievement() {
             />
             <circle cx="404" cy="176" r="3.5" fill="url(#dq-ach-gold)" />
             <text x="416" y="180" textAnchor="middle" fontSize="12" fontWeight="600" fill="#4c1d95">
-              9 Cities
+              {achievement.cities}
             </text>
           </g>
         </g>
@@ -330,6 +242,7 @@ function SuccessStoryModal({
   story: SuccessStory | null;
   onClose: () => void;
 }) {
+  const StoryIcon = story ? getContentIcon(story.icon) : Quote;
   return (
     <AnimatePresence>
       {story && (
@@ -370,7 +283,7 @@ function SuccessStoryModal({
                     {story.name}
                   </h3>
                   <span className="mt-1.5 inline-flex items-center gap-1.5 text-[11px] font-medium text-emerald-600">
-                    <story.icon className="h-3 w-3" /> {story.meta}
+                    <StoryIcon className="h-3 w-3" /> {story.meta}
                   </span>
                 </div>
               </div>
@@ -392,6 +305,10 @@ function SuccessStoryModal({
 }
 
 export function InitiativesSection() {
+  const { home } = useSiteContent();
+  const copy = home.initiatives;
+  const devqueens = copy.devqueens;
+  const webcare = copy.webcare;
   const [activeStory, setActiveStory] = useState<SuccessStory | null>(null);
   const websites = usePublicContent<Website>("websites", WEBSITES);
   const orderedWebsites = [...websites].sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
@@ -406,13 +323,14 @@ export function InitiativesSection() {
 
       <Section>
         <SectionHeading
-          eyebrow="Initiatives"
+          eyebrow={copy.eyebrow}
           title={
             <>
-              One studio. <span className="text-primary">Two bold missions.</span>
+              {copy.title} <span className="text-primary">{copy.highlight}</span>
+              {copy.suffix}
             </>
           }
-          description="IshConnect builds the people who build the web — and the web for the people who build Rwanda. Explore DevQueens and WebCare."
+          description={copy.description}
         />
 
         <div className="relative mt-16">
@@ -433,45 +351,47 @@ export function InitiativesSection() {
 
                 <div className="relative flex h-full flex-col">
                   <span className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-violet-700">
-                    <Quote className="h-3 w-3" /> DevQueens
+                    <Quote className="h-3 w-3" /> {devqueens.badge}
                   </span>
 
                   <h3 className="mt-5 font-display text-2xl font-semibold leading-tight tracking-tight text-balance sm:text-3xl">
-                    Empowering the Next Generation of{" "}
-                    <span className="text-violet-600">Women in Technology.</span>
+                    {devqueens.title} <span className="text-violet-600">{devqueens.highlight}</span>
+                    {devqueens.suffix}
                   </h3>
 
                   <p className="mt-4 max-w-md text-sm leading-relaxed text-muted-foreground sm:text-base">
-                    Closing the gender gap in African tech through mentorship, community, and
-                    ambition.
+                    {devqueens.description}
                   </p>
 
                   <div className="mt-8 grid gap-4 sm:grid-cols-3">
-                    {DEVQUEENS_PILLARS.map((p, i) => (
-                      <motion.div
-                        key={p.title}
-                        initial={{ opacity: 0, y: 12 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.5, delay: i * 0.1 }}
-                        className="rounded-2xl border border-violet-200/60 bg-white/70 p-4 backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-soft"
-                      >
-                        <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-violet-100 text-violet-700">
-                          <p.icon className="h-5 w-5" />
-                        </span>
-                        <h4 className="mt-3 text-sm font-semibold text-foreground">{p.title}</h4>
-                        <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
-                          {p.text}
-                        </p>
-                      </motion.div>
-                    ))}
+                    {devqueens.pillars.map((p, i) => {
+                      const Icon = getContentIcon(p.icon);
+                      return (
+                        <motion.div
+                          key={p.title}
+                          initial={{ opacity: 0, y: 12 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.5, delay: i * 0.1 }}
+                          className="rounded-2xl border border-violet-200/60 bg-white/70 p-4 backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-soft"
+                        >
+                          <span className="inline-flex h-10 w-10 items-center justify-center rounded-xl bg-violet-100 text-violet-700">
+                            <Icon className="h-5 w-5" />
+                          </span>
+                          <h4 className="mt-3 text-sm font-semibold text-foreground">{p.title}</h4>
+                          <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+                            {p.text}
+                          </p>
+                        </motion.div>
+                      );
+                    })}
                   </div>
 
                   <div className="mt-8 grid grid-cols-3 gap-3 rounded-2xl border border-violet-200/60 bg-white/50 p-5 backdrop-blur">
-                    {DEVQUEENS_STATS.map((s) => (
+                    {devqueens.stats.map((s) => (
                       <div key={s.label} className="text-center">
                         <p className="font-display text-2xl font-semibold text-foreground sm:text-3xl">
-                          <Counter to={s.value} suffix={s.suffix} />
+                          {s.value}
                         </p>
                         <p className="mt-0.5 text-xs text-muted-foreground">{s.label}</p>
                       </div>
@@ -484,7 +404,7 @@ export function InitiativesSection() {
                     rel="noopener noreferrer"
                     className="group/btn mt-8 inline-flex min-h-[44px] items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 text-sm font-medium text-white shadow-lg shadow-[#25D366]/20 transition-all duration-300 hover:scale-[1.02] hover:bg-[#20BD5A]"
                   >
-                    Join{" "}
+                    {devqueens.joinLabel}{" "}
                     <ExternalLink className="h-4 w-4 transition-transform group-hover/btn:translate-x-0.5" />
                   </a>
 
@@ -492,46 +412,49 @@ export function InitiativesSection() {
                   <div className="mt-10 border-t border-violet-200/60 pt-7">
                     <div className="flex items-center gap-4">
                       <span className="inline-flex items-center gap-2 rounded-full border border-violet-200 bg-white/70 px-3 py-1 text-xs font-medium text-violet-700">
-                        <Award className="h-3.5 w-3.5" /> Success Stories
+                        <Award className="h-3.5 w-3.5" /> {devqueens.successLabel}
                       </span>
                       <div className="h-px flex-1 bg-violet-200/50" />
                     </div>
 
                     <div className="mt-5 grid gap-4 sm:grid-cols-3">
-                      {SUCCESS_STORIES.map((s, i) => (
-                        <motion.button
-                          key={s.name}
-                          type="button"
-                          onClick={() => setActiveStory(s)}
-                          initial={{ opacity: 0, y: 12 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.5, delay: i * 0.1 }}
-                          className="group/card w-full rounded-2xl border border-violet-200/60 bg-white/70 p-4 text-left backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
-                        >
-                          <div className="flex items-center gap-3">
-                            <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500/15 to-primary/15 font-display text-xs font-semibold text-violet-700">
-                              {s.initials}
-                            </span>
-                            <div className="min-w-0">
-                              <p className="truncate text-sm font-semibold text-foreground">
-                                {s.name}
-                              </p>
-                              <p className="truncate text-xs text-muted-foreground">{s.role}</p>
+                      {devqueens.stories.map((s, i) => {
+                        const StoryIcon = getContentIcon(s.icon);
+                        return (
+                          <motion.button
+                            key={s.name}
+                            type="button"
+                            onClick={() => setActiveStory(s)}
+                            initial={{ opacity: 0, y: 12 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            viewport={{ once: true }}
+                            transition={{ duration: 0.5, delay: i * 0.1 }}
+                            className="group/card w-full rounded-2xl border border-violet-200/60 bg-white/70 p-4 text-left backdrop-blur transition-all duration-300 hover:-translate-y-1 hover:bg-white hover:shadow-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-violet-500"
+                          >
+                            <div className="flex items-center gap-3">
+                              <span className="inline-flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500/15 to-primary/15 font-display text-xs font-semibold text-violet-700">
+                                {s.initials}
+                              </span>
+                              <div className="min-w-0">
+                                <p className="truncate text-sm font-semibold text-foreground">
+                                  {s.name}
+                                </p>
+                                <p className="truncate text-xs text-muted-foreground">{s.role}</p>
+                              </div>
                             </div>
-                          </div>
-                          <p className="mt-3 inline-flex items-center gap-1.5 text-[11px] font-medium text-emerald-600">
-                            <s.icon className="h-3 w-3" /> {s.meta}
-                          </p>
-                          <p className="mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-violet-700 opacity-0 transition-opacity duration-300 group-hover/card:opacity-100">
-                            Read story <ArrowUpRight className="h-3 w-3" />
-                          </p>
-                        </motion.button>
-                      ))}
+                            <p className="mt-3 inline-flex items-center gap-1.5 text-[11px] font-medium text-emerald-600">
+                              <StoryIcon className="h-3 w-3" /> {s.meta}
+                            </p>
+                            <p className="mt-2 inline-flex items-center gap-1 text-[11px] font-medium text-violet-700 opacity-0 transition-opacity duration-300 group-hover/card:opacity-100">
+                              {devqueens.readStory} <ArrowUpRight className="h-3 w-3" />
+                            </p>
+                          </motion.button>
+                        );
+                      })}
                     </div>
                   </div>
 
-                  <DevQueensAchievement />
+                  <DevQueensAchievement achievement={devqueens.achievement} />
                 </div>
               </div>
             </Reveal>
@@ -550,25 +473,20 @@ export function InitiativesSection() {
 
                 <div className="relative flex flex-1 flex-col">
                   <span className="inline-flex items-center gap-2 rounded-full border border-orange-200 bg-white/70 px-3 py-1 text-xs font-semibold uppercase tracking-wider text-orange-700">
-                    <Globe className="h-3 w-3" /> About WebCare
+                    <Globe className="h-3 w-3" /> {webcare.badge}
                   </span>
 
                   <h3 className="mt-5 font-display text-xl font-semibold leading-tight tracking-tight text-balance">
-                    Professional Websites for{" "}
-                    <span className="text-primary">Schools & Businesses.</span>
+                    {webcare.title} <span className="text-primary">{webcare.highlight}</span>
                   </h3>
 
                   <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-                    WebCare is the web development service of ISHCONNECT — designing, building, and
-                    maintaining credible, results-driven websites for Rwandan institutions and
-                    businesses.{" "}
-                    <strong className="text-foreground">
-                      No templates — every site is built specifically for the client.
-                    </strong>
+                    {webcare.description}{" "}
+                    <strong className="text-foreground">{webcare.descriptionStrong}</strong>
                   </p>
 
                   <ul className="mt-6 space-y-2.5">
-                    {WEBCARE_FEATURES.slice(0, 2).map((f) => (
+                    {webcare.features.slice(0, 2).map((f) => (
                       <li key={f} className="flex items-start gap-2.5 text-sm text-foreground/80">
                         <CheckCircle className="mt-0.5 h-4 w-4 shrink-0 text-emerald-500" />
                         {f}
@@ -578,7 +496,7 @@ export function InitiativesSection() {
 
                   <div className="mt-6 border-t border-orange-200/60 pt-5">
                     <p className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-orange-700">
-                      <Globe className="h-3 w-3" /> Websites We've Built
+                      <Globe className="h-3 w-3" /> {webcare.websitesLabel}
                     </p>
                     <ul className="mt-3 space-y-1">
                       {orderedWebsites.map((w) => (
@@ -601,7 +519,8 @@ export function InitiativesSection() {
                     {featuredWebsite && (
                       <>
                         <p className="inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-wider text-orange-700">
-                          <GraduationCap className="h-3 w-3" /> Featured · {featuredWebsite.name}
+                          <GraduationCap className="h-3 w-3" /> {webcare.featuredPrefix} ·{" "}
+                          {featuredWebsite.name}
                         </p>
 
                         <a
@@ -631,7 +550,7 @@ export function InitiativesSection() {
                           rel="noopener noreferrer"
                           className="group/btn mt-3 inline-flex items-center gap-1.5 text-sm font-medium text-primary transition-colors hover:text-foreground"
                         >
-                          View {featuredWebsite.name}
+                          {webcare.viewPrefix} {featuredWebsite.name}
                           <ArrowUpRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
                         </a>
                       </>

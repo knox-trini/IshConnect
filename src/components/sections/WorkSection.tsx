@@ -4,26 +4,30 @@ import { Section, SectionHeading } from "../Section";
 import { Reveal } from "../Reveal";
 import { PROJECTS, type Project } from "@/lib/projects";
 import { usePublicContent } from "@/hooks/usePublicContent";
+import { useSiteContent } from "@/hooks/useSiteContent";
 import { resolveCmsImage } from "@/lib/cms-api";
 
 export function WorkSection({ compact = false }: { compact?: boolean }) {
+  const { home } = useSiteContent();
+  const copy = home.work;
   const projects = usePublicContent<Project>("projects", PROJECTS);
   return (
     <Section id="work">
       <SectionHeading
-        eyebrow="Selected Work"
+        eyebrow={copy.eyebrow}
         title={
           <>
-            Products that move <span className="text-primary">markets.</span>
+            {copy.title} <span className="text-primary">{copy.highlight}</span>
+            {copy.suffix}
           </>
         }
-        description="A handful of recent collaborations across fintech, health, agritech, sustainability and consumer."
+        description={copy.description}
       />
 
       <div className="mt-14 space-y-14 sm:mt-16 sm:space-y-20">
         {(compact ? projects.slice(0, 3) : projects).map((p, i) => (
           <Reveal key={p.slug} variant="fade-up" delay={i * 80} duration={700}>
-            <ProjectRow p={p} reverse={i % 2 === 1} />
+            <ProjectRow p={p} reverse={i % 2 === 1} seeWorkLabel={copy.seeWorkLabel} />
           </Reveal>
         ))}
       </div>
@@ -31,7 +35,15 @@ export function WorkSection({ compact = false }: { compact?: boolean }) {
   );
 }
 
-function ProjectRow({ p, reverse }: { p: Project; reverse: boolean }) {
+function ProjectRow({
+  p,
+  reverse,
+  seeWorkLabel,
+}: {
+  p: Project;
+  reverse: boolean;
+  seeWorkLabel: string;
+}) {
   return (
     <article
       className={`grid items-center gap-8 lg:grid-cols-12 lg:gap-14 ${
@@ -102,7 +114,7 @@ function ProjectRow({ p, reverse }: { p: Project; reverse: boolean }) {
           to={`/work/${p.slug}`}
           className="mt-6 inline-flex items-center gap-1.5 text-sm font-medium text-foreground transition-colors hover:text-primary"
         >
-          See Work
+          {seeWorkLabel}
           <ArrowUpRight className="h-3.5 w-3.5" />
         </Link>
       </div>

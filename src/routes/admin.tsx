@@ -9,10 +9,11 @@ const TYPES = [
   "programs",
   "projects",
   "websites",
+  "pages",
   "settings",
 ] as const;
 type Type = (typeof TYPES)[number];
-const blank: Record<Exclude<Type, "settings">, Record<string, unknown>> = {
+const blank: Record<Exclude<Type, "settings" | "pages">, Record<string, unknown>> = {
   team: {
     slug: "new-team-member",
     name: "New team member",
@@ -109,6 +110,10 @@ export function AdminDashboard() {
   function add() {
     if (type === "settings") {
       setMessage("Site settings are seeded as the global record. Select it to edit.");
+      return;
+    }
+    if (type === "pages") {
+      setMessage("Website content is seeded as the site record. Select it to edit.");
       return;
     }
     setSelected(null);

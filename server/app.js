@@ -26,7 +26,7 @@ app.use(
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
   }),
 );
-app.use(express.json({ limit: "100kb", strict: true }));
+app.use(express.json({ limit: "1mb", strict: true }));
 app.use(
   "/api",
   rateLimit({ windowMs: 900000, limit: 300, standardHeaders: "draft-8", legacyHeaders: false }),

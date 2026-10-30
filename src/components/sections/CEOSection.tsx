@@ -1,17 +1,20 @@
 import { Calendar, MapPin, Lightbulb, Quote } from "lucide-react";
 import { Reveal } from "../Reveal";
+import { useSiteContent } from "@/hooks/useSiteContent";
+import { resolveCmsImage } from "@/lib/cms-api";
 
 import ceoImage from "@/assets/team/ceo.jpeg";
 
 export function CEOSection() {
+  const { founder: copy } = useSiteContent();
   return (
     <section className="mx-auto w-full max-w-6xl px-6 py-20 sm:py-28 md:py-32">
       <div className="grid items-center gap-12 lg:grid-cols-12 lg:gap-16">
         <Reveal variant="fade-left" duration={700} className="lg:col-span-5">
           <div className="relative mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden rounded-[28px] border border-soft-border/70 bg-[#FFF7ED] shadow-elevated">
             <img
-              src={ceoImage}
-              alt="Ishimwe J. Claude — CEO & Founder of IshConnect, a leading software development company in Kigali, Rwanda"
+              src={resolveCmsImage(copy.image) || ceoImage}
+              alt={`${copy.name} — ${copy.role}`}
               loading="lazy"
               decoding="async"
               className="h-full w-full object-cover transition-transform duration-700 hover:scale-105"
@@ -19,11 +22,11 @@ export function CEOSection() {
             <div className="absolute inset-0 bg-gradient-to-t from-black/35 via-transparent to-transparent" />
             <div className="absolute left-4 top-4 inline-flex items-center gap-2 rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-[#111827] backdrop-blur">
               <span className="h-1.5 w-1.5 rounded-full bg-[#F97316]" />
-              Founder
+              {copy.badge}
             </div>
             <div className="absolute bottom-4 right-4 rounded-2xl bg-[#111827] px-3 py-2 text-white shadow-lg">
-              <p className="text-[10px] uppercase tracking-wider opacity-70">Based in</p>
-              <p className="text-xs font-semibold">Kigali, Rwanda</p>
+              <p className="text-[10px] uppercase tracking-wider opacity-70">{copy.basedInLabel}</p>
+              <p className="text-xs font-semibold">{copy.basedIn}</p>
             </div>
           </div>
         </Reveal>
@@ -34,40 +37,44 @@ export function CEOSection() {
           </div>
 
           <blockquote className="mt-6 font-display text-3xl font-medium leading-snug tracking-tight text-balance sm:text-4xl md:text-[2.6rem]">
-            "We are not just building software. We are building Africa's
-            <span className="text-[#F97316]"> digital future.</span>"
+            "{copy.quote}
+            <span className="text-[#F97316]"> {copy.quoteHighlight}</span>"
           </blockquote>
 
           <p className="mt-6 max-w-xl text-base leading-relaxed text-muted-foreground">
-            <strong>Ishimwe J. Claude</strong> is the Founder and Chief Executive Officer of IshConnect, a Kigali-based technology company he established in <strong>2020</strong> with a vision to build world-class digital products and nurture homegrown tech talent across Africa.
+            {copy.intro}
           </p>
 
           <p className="mt-4 max-w-xl text-base leading-relaxed text-muted-foreground">
-            With deep expertise in software engineering, AI systems architecture, and technology strategy, Claude has led IshConnect from a passion-driven initiative into a full-stack innovation studio delivering web platforms, mobile applications, AI solutions, and digital infrastructure for clients across Rwanda, East Africa, and beyond.
+            {copy.bio}
           </p>
 
           <div className="mt-6 grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div className="flex items-start gap-3 rounded-xl border border-soft-border/60 bg-surface p-4 shadow-soft">
               <Calendar className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Founded</p>
-                <p className="text-sm font-medium text-foreground">IshConnect, 2020</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  {copy.foundedLabel}
+                </p>
+                <p className="text-sm font-medium text-foreground">{copy.founded}</p>
               </div>
             </div>
             <div className="flex items-start gap-3 rounded-xl border border-soft-border/60 bg-surface p-4 shadow-soft">
               <MapPin className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Location</p>
-                <p className="text-sm font-medium text-foreground">Kigali, Rwanda</p>
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  {copy.locationLabel}
+                </p>
+                <p className="text-sm font-medium text-foreground">{copy.location}</p>
               </div>
             </div>
             <div className="flex items-start gap-3 rounded-xl border border-soft-border/60 bg-surface p-4 shadow-soft sm:col-span-2">
               <Lightbulb className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
               <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Mission</p>
-                <p className="text-sm font-medium text-foreground">
-                  Empowering African innovation through technology — building scalable digital solutions that drive economic growth, bridge the skills gap, and position Rwanda as a global technology hub.
+                <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+                  {copy.missionLabel}
                 </p>
+                <p className="text-sm font-medium text-foreground">{copy.mission}</p>
               </div>
             </div>
           </div>
@@ -76,10 +83,10 @@ export function CEOSection() {
             <div className="h-px flex-1 bg-soft-border" />
             <div className="text-right">
               <p className="font-display text-2xl italic tracking-tight text-[#111827]">
-                Ishimwe J. Claude
+                {copy.name}
               </p>
               <p className="text-xs uppercase tracking-[0.2em] text-muted-foreground">
-                CEO &amp; Founder
+                {copy.role}
               </p>
             </div>
           </div>

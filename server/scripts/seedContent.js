@@ -14,12 +14,14 @@ const vite = await createServer({
 });
 
 try {
-  const [projectModule, testimonialModule, programModule, websiteModule] = await Promise.all([
-    vite.ssrLoadModule("/src/lib/projects.ts"),
-    vite.ssrLoadModule("/src/lib/testimonials.ts"),
-    vite.ssrLoadModule("/src/lib/programs.ts"),
-    vite.ssrLoadModule("/src/lib/websites.ts"),
-  ]);
+  const [projectModule, testimonialModule, programModule, websiteModule, siteContentModule] =
+    await Promise.all([
+      vite.ssrLoadModule("/src/lib/projects.ts"),
+      vite.ssrLoadModule("/src/lib/testimonials.ts"),
+      vite.ssrLoadModule("/src/lib/programs.ts"),
+      vite.ssrLoadModule("/src/lib/websites.ts"),
+      vite.ssrLoadModule("/src/lib/site-content.ts"),
+    ]);
 
   const team = [
     {
@@ -98,6 +100,15 @@ try {
     order,
     isPublished: true,
   }));
+  const pages = [
+    {
+      slug: "site",
+      title: "Website content",
+      content: siteContentModule.DEFAULT_SITE_CONTENT,
+      order: 0,
+      isPublished: true,
+    },
+  ];
   const settings = [
     {
       slug: "global",
@@ -306,7 +317,7 @@ try {
     },
   ];
 
-  const content = { team, testimonials, partners, programs, projects, websites, settings };
+  const content = { team, testimonials, partners, programs, projects, websites, pages, settings };
   await mongoose.connect(process.env.MONGODB_URI);
   for (const [type, records] of Object.entries(content)) {
     const Model = contentModels[type];

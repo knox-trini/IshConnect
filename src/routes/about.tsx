@@ -1,15 +1,15 @@
 import { Link } from "react-router-dom";
 import { SEOHead } from "@/components/SEOHead";
 import { BreadcrumbJsonLd } from "@/components/JsonLd";
-import { PAGE_SEO } from "@/lib/seo";
 import { Section } from "@/components/Section";
 import { Reveal } from "@/components/Reveal";
 import { useSiteSettings } from "@/hooks/useSiteSettings";
+import { usePageSeo, useSiteContent } from "@/hooks/useSiteContent";
 import { DEFAULT_SETTINGS, type TimelineItem } from "@/lib/site-settings";
 
-const config = PAGE_SEO.about;
-
 export function About() {
+  const config = usePageSeo("about");
+  const { about: copy } = useSiteContent();
   const settings = useSiteSettings();
   const timeline = settings.timeline?.length
     ? settings.timeline
@@ -25,7 +25,7 @@ export function About() {
             <Reveal variant="fade-up" duration={500}>
               <span className="inline-flex items-center gap-2 rounded-full border border-soft-border/70 bg-surface px-3 py-1 text-xs font-medium text-foreground/70">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                About IshConnect
+                {copy.badge}
               </span>
             </Reveal>
             <Reveal variant="fade-up" delay={50} duration={600}>
@@ -45,24 +45,19 @@ export function About() {
           {/* Quick links — critical for sitelinks */}
           <Reveal variant="fade-up" delay={150} duration={600}>
             <div className="mt-10 flex flex-wrap items-center gap-4">
-              <Link
-                to="/founder"
-                className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background magnetic-btn"
-              >
-                Meet the Founder
-              </Link>
-              <Link
-                to="/team"
-                className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-soft-border bg-white/70 px-5 py-2.5 text-sm font-medium text-foreground backdrop-blur-sm hover:border-primary hover:text-primary"
-              >
-                Our Team
-              </Link>
-              <Link
-                to="/work"
-                className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-soft-border bg-white/70 px-5 py-2.5 text-sm font-medium text-foreground backdrop-blur-sm hover:border-primary hover:text-primary"
-              >
-                Explore Work
-              </Link>
+              {copy.quickLinks.map((link) => (
+                <Link
+                  key={`${link.to}-${link.label}`}
+                  to={link.to}
+                  className={
+                    link.primary
+                      ? "inline-flex min-h-[44px] items-center gap-1.5 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background magnetic-btn"
+                      : "inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-soft-border bg-white/70 px-5 py-2.5 text-sm font-medium text-foreground backdrop-blur-sm hover:border-primary hover:text-primary"
+                  }
+                >
+                  {link.label}
+                </Link>
+              ))}
             </div>
           </Reveal>
         </Section>
@@ -73,12 +68,12 @@ export function About() {
             <Reveal variant="fade-up" duration={500}>
               <span className="inline-flex items-center gap-2 rounded-full border border-soft-border/70 bg-surface px-3 py-1 text-xs font-medium text-foreground/70">
                 <span className="h-1.5 w-1.5 rounded-full bg-primary" />
-                Mission
+                {copy.missionBadge}
               </span>
             </Reveal>
             <Reveal variant="fade-up" delay={50} duration={600}>
               <h2 className="mt-4 font-display text-3xl font-semibold leading-[1.05] tracking-tight text-balance sm:text-4xl md:text-5xl">
-                What we do — and <span className="text-primary">who we serve.</span>
+                {copy.missionTitle} <span className="text-primary">{copy.missionHighlight}</span>
               </h2>
             </Reveal>
             <Reveal variant="fade-up" delay={100} duration={600}>
@@ -110,19 +105,15 @@ export function About() {
         {/* Timeline */}
         <Section id="timeline">
           <Reveal variant="fade-up" duration={500}>
-            <p className="text-xs font-semibold uppercase tracking-wider text-primary">Journey</p>
+            <p className="text-xs font-semibold uppercase tracking-wider text-primary">
+              {copy.journeyEyebrow}
+            </p>
           </Reveal>
           <Reveal variant="fade-up" delay={50} duration={600}>
-            <h2 className="mt-2 text-3xl font-semibold tracking-tight">
-              Our growth tree — IshConnect timeline
-            </h2>
+            <h2 className="mt-2 text-3xl font-semibold tracking-tight">{copy.journeyTitle}</h2>
           </Reveal>
           <Reveal variant="fade-up" delay={100} duration={600}>
-            <p className="mt-3 max-w-2xl text-sm text-gray-600">
-              A structured evolution map showing how <strong>IshConnect</strong> grew from a
-              passion-driven technology initiative in Kigali, Rwanda into a leading software
-              development and AI company.
-            </p>
+            <p className="mt-3 max-w-2xl text-sm text-gray-600">{copy.journeyDescription}</p>
           </Reveal>
 
           <div className="relative mt-14">
@@ -160,39 +151,22 @@ export function About() {
           <Reveal variant="fade-up" duration={600}>
             <div className="rounded-3xl border border-soft-border/70 bg-surface p-8 sm:p-12 shadow-soft text-center">
               <h2 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
-                Learn more about IshConnect
+                {copy.ctaTitle}
               </h2>
               <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
-                <Link
-                  to="/founder"
-                  className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background magnetic-btn"
-                >
-                  Founder
-                </Link>
-                <Link
-                  to="/team"
-                  className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-soft-border bg-white/70 px-5 py-2.5 text-sm font-medium text-foreground hover:border-primary hover:text-primary"
-                >
-                  Team
-                </Link>
-                <Link
-                  to="/work"
-                  className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-soft-border bg-white/70 px-5 py-2.5 text-sm font-medium text-foreground hover:border-primary hover:text-primary"
-                >
-                  Our Work
-                </Link>
-                <Link
-                  to="/academy"
-                  className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-soft-border bg-white/70 px-5 py-2.5 text-sm font-medium text-foreground hover:border-primary hover:text-primary"
-                >
-                  Academy
-                </Link>
-                <Link
-                  to="/contact"
-                  className="inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-soft-border bg-white/70 px-5 py-2.5 text-sm font-medium text-foreground hover:border-primary hover:text-primary"
-                >
-                  Contact
-                </Link>
+                {copy.ctaLinks.map((link) => (
+                  <Link
+                    key={`${link.to}-${link.label}`}
+                    to={link.to}
+                    className={
+                      link.primary
+                        ? "inline-flex min-h-[44px] items-center gap-1.5 rounded-full bg-foreground px-5 py-2.5 text-sm font-medium text-background magnetic-btn"
+                        : "inline-flex min-h-[44px] items-center gap-1.5 rounded-full border border-soft-border bg-white/70 px-5 py-2.5 text-sm font-medium text-foreground hover:border-primary hover:text-primary"
+                    }
+                  >
+                    {link.label}
+                  </Link>
+                ))}
               </div>
             </div>
           </Reveal>
