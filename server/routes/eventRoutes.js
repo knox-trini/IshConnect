@@ -1,0 +1,11 @@
+﻿import express from "express";
+import { requireAdmin } from "../middleware/requireAdmin.js";
+import { createEvent, deleteEvent, getEvent, listEvents, updateEvent } from "./events.js";
+const router = express.Router();
+router.get("/", listEvents);
+router.get("/:id", getEvent);
+router.post("/", requireAdmin, createEvent);
+router.put("/:id", requireAdmin, updateEvent);
+router.patch("/:id", requireAdmin, updateEvent);
+router.delete("/:id", requireAdmin, deleteEvent);
+export default router;

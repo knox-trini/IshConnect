@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /*?q=
+Disallow: /*?query=
+
+Sitemap: https://www.ishconnect.rw/sitemap.xml
+Host: https://www.ishconnect.rw

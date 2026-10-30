@@ -1,0 +1,334 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="referrer" content="strict-origin-when-cross-origin" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="mobile-web-app-capable" content="yes" />
+
+    <!-- SEO / Social Sharing (server-rendered baseline, refined per page at runtime) -->
+    <title>IshConnect — Software Development & AI Innovation Studio in Rwanda</title>
+    <meta
+      name="description"
+      content="IshConnect is a software development and AI innovation studio based in Kigali, Rwanda. We build web apps, mobile apps, AI systems, and offer coding bootcamps through IshConnect Academy. Trusted tech partner across Africa."
+    />
+    <link rel="image_src" href="https://www.ishconnect.rw/og-image.png" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="IshConnect" />
+    <meta property="og:title" content="IshConnect — Software Development & AI Innovation Studio in Rwanda" />
+    <meta
+      property="og:description"
+      content="IshConnect delivers custom software, AI solutions, web development, and tech training across Africa from Kigali, Rwanda."
+    />
+    <meta property="og:url" content="https://www.ishconnect.rw/" />
+    <meta property="og:image" content="https://www.ishconnect.rw/og-image.png" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta
+      property="og:image:alt"
+      content="IshConnect – Software Development & AI Innovation Studio in Kigali, Rwanda"
+    />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@IshConnectRW" />
+    <meta name="twitter:creator" content="@IshConnectRW" />
+    <meta name="twitter:title" content="IshConnect — Software Development & AI Innovation Studio in Rwanda" />
+    <meta
+      name="twitter:description"
+      content="IshConnect delivers custom software, AI solutions, web development, and tech training across Africa from Kigali, Rwanda."
+    />
+    <meta name="twitter:image" content="https://www.ishconnect.rw/og-image.png" />
+    <meta
+      name="twitter:image:alt"
+      content="IshConnect – Software Development & AI Innovation Studio in Kigali, Rwanda"
+    />
+
+    <!-- Favicons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Resource Hints -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+    <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+    <link rel="preconnect" href="https://www.googletagmanager.com" />
+    <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Sora:wght@500;600;700;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      @media (prefers-reduced-motion: reduce) {
+        *, *::before, *::after { animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; }
+      }
+
+      /* IshConnect loaders — professional, like Google & Facebook.
+         Initial load: Google-style indeterminate top progress bar + minimal brand.
+         Route load: Facebook-style shimmer skeleton. Light palette, no black. */
+      .app-loader,
+      .page-loader {
+        --loader-bg: #fff7ed; /* --background warm cream */
+        --loader-fg: #1f2937; /* --foreground slate */
+        --loader-accent: #f97316; /* --primary orange */
+        --loader-skeleton: rgb(31 41 55 / 0.08);
+        --loader-skeleton-hi: rgb(255 255 255 / 0.6);
+        font-family: "Sora", "Inter", system-ui, -apple-system, sans-serif;
+        color: var(--loader-fg);
+      }
+
+      /* ---- Initial loader (Google-style top progress bar) ---- */
+      .app-loader {
+        position: fixed;
+        inset: 0;
+        z-index: 2147483000;
+        background: var(--loader-bg);
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 18px;
+        opacity: 1;
+        visibility: visible;
+        pointer-events: none;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+      }
+      .app-loader--hidden {
+        opacity: 0;
+        visibility: hidden;
+      }
+      .app-loader__progress {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 3px;
+        overflow: hidden;
+        background: transparent;
+      }
+      .app-loader__progress::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        width: 40%;
+        background: linear-gradient(90deg, transparent, var(--loader-accent) 45%, #fb923c);
+        animation: loader-topbar 1.15s ease-in-out infinite;
+      }
+      .app-loader__logo {
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 54px;
+        height: 54px;
+        border-radius: 15px;
+        background: var(--loader-fg);
+        box-shadow: 0 8px 24px rgb(249 115 22 / 0.18);
+        animation: loader-breathe 2s ease-in-out infinite;
+      }
+      .app-loader__mark {
+        font-size: 24px;
+        font-weight: 700;
+        line-height: 1;
+        letter-spacing: -0.02em;
+        color: var(--loader-bg);
+      }
+      .app-loader__dot {
+        position: absolute;
+        top: -4px;
+        right: -4px;
+        width: 13px;
+        height: 13px;
+        border-radius: 9999px;
+        background: var(--loader-accent);
+        box-shadow: 0 0 0 4px var(--loader-bg);
+        animation: loader-pulse 1.6s ease-in-out infinite;
+      }
+      .app-loader__brand {
+        font-size: 22px;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        animation: loader-fadein 0.4s 0.1s ease both;
+      }
+      .app-loader__brand span {
+        color: var(--loader-accent);
+      }
+
+      /* ---- Route skeleton (Facebook-style shimmer) ---- */
+      .page-loader {
+        width: 100%;
+        min-height: 60vh;
+        padding: clamp(16px, 4vw, 40px);
+      }
+      .page-loader__inner {
+        width: 100%;
+        max-width: 1120px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        gap: 14px;
+      }
+      .page-loader__head {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 4px;
+      }
+      .page-loader__avatar {
+        flex: none;
+        width: 48px;
+        height: 48px;
+        border-radius: 50%;
+      }
+      .page-loader__title {
+        height: 24px;
+        width: min(320px, 60vw);
+        border-radius: 6px;
+      }
+      .page-loader__hero {
+        width: 100%;
+        height: clamp(140px, 32vh, 320px);
+        border-radius: 14px;
+        margin-bottom: 6px;
+      }
+      .page-loader__rows {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .page-loader__grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+      .page-loader__card {
+        height: 120px;
+        border-radius: 14px;
+      }
+      .page-loader__skel {
+        position: relative;
+        overflow: hidden;
+        background: var(--loader-skeleton);
+      }
+      .page-loader__skel::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, transparent, var(--loader-skeleton-hi), transparent);
+        animation: loader-shimmer 1.4s ease-in-out infinite;
+      }
+      @media (max-width: 480px) {
+        .page-loader__grid {
+          grid-template-columns: 1fr;
+        }
+        .app-loader {
+          gap: 16px;
+        }
+        .app-loader__logo {
+          width: 46px;
+          height: 46px;
+          border-radius: 13px;
+        }
+        .app-loader__mark {
+          font-size: 20px;
+        }
+        .app-loader__dot {
+          width: 11px;
+          height: 11px;
+        }
+        .app-loader__brand {
+          font-size: 19px;
+        }
+      }
+      @keyframes loader-topbar {
+        0% { left: -42%; }
+        50% { left: 100%; }
+        100% { left: 100%; }
+      }
+      @keyframes loader-breathe {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.04); }
+      }
+      @keyframes loader-pulse {
+        0%, 100% { transform: scale(1); opacity: 1; }
+        50% { transform: scale(1.3); opacity: 0.75; }
+      }
+      @keyframes loader-fadein {
+        from { opacity: 0; transform: translateY(8px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      @keyframes loader-shimmer {
+        from { transform: translateX(-100%); }
+        to { transform: translateX(100%); }
+      }
+      @media (prefers-reduced-motion: reduce) {
+        .app-loader *,
+        .page-loader * {
+          animation: none !important;
+        }
+      }
+    </style>
+
+    <!-- Google Tag Manager -->
+    <script>
+      (function (w, d, s, l, i) {
+        w[l] = w[l] || [];
+        w[l].push({ "gtm.start": new Date().getTime(), event: "gtm.js" });
+        var f = d.getElementsByTagName(s)[0],
+          j = d.createElement(s),
+          dl = l != "dataLayer" ? "&l=" + l : "";
+        j.async = true;
+        j.src = "https://www.googletagmanager.com/gtm.js?id=" + i + dl;
+        f.parentNode.insertBefore(j, f);
+      })(window, document, "script", "dataLayer", "GTM-593BM2GN");
+    </script>
+    <!-- End Google Tag Manager -->
+  </head>
+  <body>
+    <div
+      id="app-loader"
+      class="app-loader"
+      role="status"
+      aria-label="IshConnect is loading"
+    >
+      <div class="app-loader__progress" aria-hidden="true"></div>
+      <div class="app-loader__logo" aria-hidden="true">
+        <span class="app-loader__mark">I</span>
+        <span class="app-loader__dot"></span>
+      </div>
+      <div class="app-loader__brand">Ish<span>Connect</span></div>
+    </div>
+    <div id="root"></div>
+    <script>
+      (function () {
+        var loader = document.getElementById("app-loader");
+        var root = document.getElementById("root");
+        if (loader && root && root.children.length > 0) {
+          loader.classList.add("app-loader--hidden");
+          setTimeout(function () {
+            if (loader.parentNode) loader.parentNode.removeChild(loader);
+          }, 600);
+        }
+      })();
+    </script>
+    <script type="module" src="/src/main.tsx"></script>
+
+    <!-- Google Tag Manager (noscript) -->
+    <noscript
+      ><iframe
+        src="https://www.googletagmanager.com/ns.html?id=GTM-593BM2GN"
+        height="0"
+        width="0"
+        style="display: none; visibility: hidden"
+      ></iframe
+    ></noscript>
+    <!-- End Google Tag Manager (noscript) -->
+  </body>
+</html>
